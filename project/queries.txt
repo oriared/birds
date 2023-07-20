@@ -1,0 +1,45 @@
+In [28]: Bird.objects.count()
+Out[28]: 5
+
+In [29]: Bird.objects.first()
+Out[29]: <Bird: Ворона Игорь>
+
+In [30]: Bird.objects.latest()
+Out[30]: <Bird: Попугай Валера>
+
+In [32]: Bird.objects.earliest('birth')
+Out[32]: <Bird: Ворона Игорь>
+
+In [37]: Bird.objects.get(id=1)
+Out[37]: <Bird: Ворона Настя>
+
+In [42]: BirdNest.objects.create(
+    ...:             bird=Bird.objects.latest(),
+    ...:             nest=Nest.objects.get(id=2),
+    ...:             date_check_inn=date.today() - timedelta(days=10)
+    ...:         )
+Out[42]: <BirdNest: Попугай Валера: 2 ("Дом птиц")>
+
+In [44]: obj, created = Bird.objects.update_or_create(
+    ...:     name='Павел', specie=Specie.objects.get(name='Ворона'),
+    ...:     defaults={'current_nest': Nest.objects.first()
+    ...:     },
+    ...: )
+
+In [53]: Nest.objects.filter(current_birds__name='Павел')
+Out[53]: <QuerySet [<Nest: 1 ("Воронье")>]>
+
+In [54]: Bird.objects.values_list('name',).annotate(num_of_nests=Count('nests'))
+Out[54]: <QuerySet [('Валера', 1), ('Игорь', 1), ('Настя', 1), ('Павел', 0), ('Тамара', 0)]>
+
+In [58]: Bird.objects.filter(name__contains='ра')
+Out[58]: <QuerySet [<Bird: Попугай Тамара>, <Bird: Попугай Валера>]>
+
+In [61]: Bird.objects.filter(birth__range=(date(2023, 2, 28), date(2023, 5, 10)))
+Out[61]: <QuerySet [<Bird: Попугай Тамара>, <Bird: Попугай Валера>]>
+
+In [62]: Bird.objects.filter(last_seen__date=date.today())
+Out[62]: <QuerySet [<Bird: Ворона Игорь>, <Bird: Ворона Настя>, <Bird: Ворона Павел>, <Bird: Попугай Тамара>, <Bird: Попугай Валера>]>
+
+In [63]: Bird.objects.filter(birth__year=2023)
+Out[63]: <QuerySet [<Bird: Попугай Тамара>, <Bird: Попугай Валера>]>

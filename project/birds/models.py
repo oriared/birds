@@ -17,7 +17,7 @@ class Bird(models.Model):
         ('F', 'Женский')
     )
     uuid = models.UUIDField('UUID идентификатор', default=uuid.uuid4, editable=False)
-    slug = models.SlugField('slug')
+    slug = models.SlugFidield('slug')
     name = models.CharField('Имя', max_length=255)
     specie = models.ForeignKey('Specie', verbose_name='Вид', related_name='birds', on_delete=models.PROTECT)
     birth = models.DateField('Дата рождения', editable=False)
