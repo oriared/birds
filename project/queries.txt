@@ -43,3 +43,22 @@ Out[62]: <QuerySet [<Bird: Ворона Игорь>, <Bird: Ворона Нас�
 
 In [63]: Bird.objects.filter(birth__year=2023)
 Out[63]: <QuerySet [<Bird: Попугай Тамара>, <Bird: Попугай Валера>]>
+
+
+
+##### запросы из pre-registration #######
+
+qs.filter(org=record.org, org__in=record.specialist.get_orgs())
+
+models.SubService.objects.filter(
+    spec_orgs__specialist__in=specs,
+    spec_orgs__org__in=orgs,
+)
+
+services = models.Service.objects.filter(
+    Q(sub_services__in=sub_services) | Q(spec_orgs__specialist__in=specs)
+    & Q(spec_orgs__org__in=orgs),
+)
+
+qs.filter(Q(orgs__isnull=True) | Q(orgs__in=self.request.user.pre_reg.orgs.values_list('id', flat=True)))
+
